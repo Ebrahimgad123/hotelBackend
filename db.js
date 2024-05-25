@@ -1,0 +1,14 @@
+const mongoose = require('mongoose');
+
+var mongoUrl = 'mongodb+srv://ibrahim:123@cluster0.wakki2p.mongodb.net/roomBooking';
+// { useUnifiedTopology: true, useNewUrlParser: true }
+mongoose.connect(mongoUrl, )
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error.message);
+  });
+
+
+  module.exports= mongoose;

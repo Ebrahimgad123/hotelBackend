@@ -1,0 +1,19 @@
+[
+{
+    "name": "hema gad Rooms",
+    "maxCount": 6,
+    "phoneNumber": 25913861223,
+    "rentPerDay": 200,
+    "imageUrl": [
+       "http://192.168.1.104:3000/images/2.jpg",
+      "http://192.168.1.104:3000/images/1.png",
+      "http://192.168.1.104:3000/images/3.jpg"
+    ],
+    "currentBookings": [
+
+    ],
+    "type": "Suite",
+    "description": "A luxurious suite with a beautiful view of the city skyline."
+  }
+ 
+]
