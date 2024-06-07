@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-var mongoUrl = 'mongodb+srv://hema123:123@cluster0.wakki2p.mongodb.net/roomBooking';
+var mongoUrl ="mongodb+srv://hema123:123@cluster0.xaj2xnc.mongodb.net/roomBooking";
 // { useUnifiedTopology: true, useNewUrlParser: true }
 mongoose.connect(mongoUrl, )
   .then(() => {
@@ -15,5 +15,6 @@ mongoose.connect(mongoUrl, )
    
 
 
-
   
+
+
