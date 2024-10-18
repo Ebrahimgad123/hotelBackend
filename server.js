@@ -28,6 +28,9 @@ app.use(
   express.static(path.join(__dirname, "../frontend/public/images")),
 );
 
+app.get('/',(req,res)=>{
+  res.send('<h1> Welcome To our backend Api</h1>')
+})
 // إعداد المسارات للـ API
 app.use("/api", roomsRoute);
 app.use("/api", usersRoute);
