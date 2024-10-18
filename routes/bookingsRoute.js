@@ -1,12 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Booking = require('../models/Booking');
-const Room = require('../models/room');
-const stripe = require('stripe')('sk_test_51Oeb4QGKxFmziudOhMKUXH8VjNQimC76mjcWuKAXUc6Rl9knREd5ubZZbTItvSrTTInG3DosTVnOnP2LHYsAIxJf00PYdwFoPr');
-const { v4: uuidv4 } = require('uuid');
+const Booking = require("../models/Booking");
+const Room = require("../models/room");
+const stripe = require("stripe")(
+  "sk_test_51Oeb4QGKxFmziudOhMKUXH8VjNQimC76mjcWuKAXUc6Rl9knREd5ubZZbTItvSrTTInG3DosTVnOnP2LHYsAIxJf00PYdwFoPr",
+);
+const { v4: uuidv4 } = require("uuid");
 
-router.post('/bookings', async (req, res) => {
-  const { room, userId, fromDate, toDate, totalAmount, totalDays, token } = req.body;
+router.post("/bookings", async (req, res) => {
+  const { room, userId, fromDate, toDate, totalAmount, totalDays, token } =req.body;
 
   try {
     const customer = await stripe.customers.create({
@@ -18,12 +20,12 @@ router.post('/bookings', async (req, res) => {
       {
         amount: totalAmount * 100,
         customer: customer.id,
-        currency: 'USD',
+        currency: "USD",
         receipt_email: token.email,
       },
       {
         idempotencyKey: uuidv4(),
-      }
+      },
     );
 
     if (payment) {
@@ -36,7 +38,7 @@ router.post('/bookings', async (req, res) => {
           toDate,
           totalAmount,
           totalDays,
-          transactionId: '1234',
+          transactionId: "1234",
         });
 
         const booking = await newBooking.save();
@@ -52,20 +54,20 @@ router.post('/bookings', async (req, res) => {
 
         await bookedRoom.save();
 
-        res.status(200).json({ message: 'Room booked successfully' });
+        res.status(200).json({ message: "Room booked successfully" });
       } catch (err) {
-        console.error('Error in booking process:', err);
-        res.status(500).json({ message: 'Failed to book the room' });
+        console.error("Error in booking process:", err);
+        res.status(500).json({ message: "Failed to book the room" });
       }
     } else {
-      res.status(500).json({ message: 'Payment failed' });
+      res.status(500).json({ message: "Payment failed" });
     }
   } catch (error) {
-    console.error('Error in payment processing:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error in payment processing:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.post('/getBookingByUserId', async (req, res) => {
+router.post("/getBookingByUserId", async (req, res) => {
   const userId = await req.body.userId;
   try {
     const booking = await Booking.find({ userId: userId });
@@ -74,31 +76,32 @@ router.post('/getBookingByUserId', async (req, res) => {
     // Handle errors
   }
 });
-router.post('/cancelBooking', async (req, res) => {
+router.post("/cancelBooking", async (req, res) => {
   const { roomId } = req.body;
 
   try {
-   
     const booking = await Booking.findById(roomId);
 
     if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
+      return res.status(404).json({ message: "Booking not found" });
     }
     const room = await Room.findOne({ _id: booking.roomId });
 
-    room.currentBookings = room.currentBookings.filter(booking => booking.bookingId.toString() !== roomId);
+    room.currentBookings = room.currentBookings.filter(
+      (booking) => booking.bookingId.toString() !== roomId,
+    );
 
     await room.save();
-    
+
     await Booking.deleteOne({ _id: roomId });
 
-    res.status(200).json({ message: 'Booking canceled and removed successfully' });
+    res
+      .status(200)
+      .json({ message: "Booking canceled and removed successfully" });
   } catch (error) {
-    console.error('Error in canceling and removing booking:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error in canceling and removing booking:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
-
 
 module.exports = router;
